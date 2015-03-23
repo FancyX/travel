@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mytools dao" default="clean">
+
+	<description>
+		Parameter tablePrefix: 指定表前缀，如："tablePrefix=goods_".
+		Parameter tableList: 指定表列表，如："tableList=goods,goods_category".
+		Note: 参数 tablePrefix 和 tableList 只能指定其中之一，都不指定则生成所有表.
+		metaClass:["org.mytools.dao.metadata.mysql.MysqlMetadata"].
+		sqlSessionTemplateName: spring 配置文件中指定的 SqlSessionTemplate bean 的名称.
+	</description>
+
+	<property name="libDir" location="webroot/WEB-INF/lib" />
+	<property name="buildDir" location="${libDir}/build" />
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${buildDir}" />
+	</target>
+
+	<path id="class.path">
+		<fileset dir="${libDir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="run" depends="init">
+		<java classname="org.mytools.dao.mybatis.Organizer" fork="true">
+			<classpath refid="class.path" />
+			<arg value="buildPath=${buildDir}" />
+			<arg value="metaClass=org.mytools.dao.metadata.mysql.MysqlMetadata" />
+			<arg value="jdbcUrl=jdbc:mysql://123.57.45.111:3306/90travel" />
+			<arg value="jdbcUser=root" />
+			<arg value="jdbcPassword=c58H8CxuHYfr" />
+			<arg value="jdbcDriver=com.mysql.jdbc.Driver" />
+			<arg value="sqlSessionTemplateName=sqlSessionTemplate" />
+			<arg value="domainPackage=com.travel.model" />
+			<arg value="domainPath=D:\Workspaces\travel\src\com\travel\model" />
+			<arg value="mapperPath=D:\Workspaces\travel\src\com\travel\mapper" />
+			<arg value="tableList=user_route_assco" />
+		</java>
+	</target>
+
+	<target name="clean" depends="run">
+		<delete dir="${buildDir}" />
+	</target>
+
+</project>

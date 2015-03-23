@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.travel.dao.UserDao">
+
+	<resultMap type="com.travel.model.User" id="userResultMap">
+		<id column="user_id" property="id" />
+		<result column="user_wechat_num" property="wechatNum" />
+		<result column="user_phone" property="phone" />
+		<result column="user_age" property="age" />
+		<result column="user_sex" property="sex" />
+		<result column="user_photo" property="photo" />
+	</resultMap>
+
+	<sql id="userColumns">user.id AS user_id , user.wechat_num AS user_wechat_num ,
+		user.phone AS user_phone , user.age AS user_age , user.sex AS user_sex
+		, user.photo AS user_photo</sql>
+
+	<insert id="insert" parameterType="com.travel.model.User"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO user
+		<trim prefix="(" prefixOverrides=",">
+			<if test="id!=0">,id</if>
+			<if test="wechatNum!=null">,wechat_num</if>
+			<if test="phone!=null">,phone</if>
+			<if test="age!=0">,age</if>
+			<if test="sex!=0">,sex</if>
+			<if test="photo!=null">,photo</if>
+		</trim>
+		) VALUES
+		<trim prefix="(" prefixOverrides=",">
+			<if test="id!=0">,#{id}</if>
+			<if test="wechatNum!=null">,#{wechatNum}</if>
+			<if test="phone!=null">,#{phone}</if>
+			<if test="age!=0">,#{age}</if>
+			<if test="sex!=0">,#{sex}</if>
+			<if test="photo!=null">,#{photo}</if>
+		</trim>
+		)
+	</insert>
+
+	<select id="selectById" resultMap="userResultMap" parameterType="java.lang.Integer">
+		SELECT
+		<include refid="userColumns" />
+		FROM user where id = #{id}
+	</select>
+
+	<update id="update">
+		UPDATE user
+		<trim prefix="SET" prefixOverrides=",">
+			<if test="id!=0">,id = #{id}</if>
+			<if test="wechatNum!=null">,wechat_num = #{wechatNum}</if>
+			<if test="phone!=null">,phone = #{phone}</if>
+			<if test="age!=0">,age = #{age}</if>
+			<if test="sex!=0">,sex = #{sex}</if>
+			<if test="photo!=null">,photo = #{photo}</if>
+		</trim>
+		<trim prefix="WHERE" prefixOverrides="AND">AND id = #{id}</trim>
+	</update>
+
+	<delete id="deleteById">
+		DELETE FROM user
+		<trim prefix="WHERE" prefixOverrides="AND">AND id = #{id}</trim>
+	</delete>
+
+	<select id="getList" resultMap="userResultMap">SELECT * FROM user</select>
+
+</mapper>

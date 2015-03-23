@@ -1,0 +1,19 @@
+package com.travel.dao;
+
+import java.util.List;
+
+import com.travel.model.${modelName};
+
+public interface ${modelName}Dao {
+
+	public int deleteById(int id);
+
+	public int insert(${modelName} ${tableName});
+
+	public ${modelName} selectById(int id);
+
+	public int update(${modelName} ${tableName});
+
+	public List<${modelName}> getList();
+
+}
