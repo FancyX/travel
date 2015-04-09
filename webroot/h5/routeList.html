@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>搜索端进入页</title>
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link href="css/common.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/jquery-1.9.0.js"></script>
+<script type="text/javascript" src="js/effect.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+</head>
+
+<body class="confirmBody">
+	<!--wrap-->
+	<div class="wrap">
+		<!--logo-->
+		<div class="logo">
+			<span class="logoIco">90logo</span>
+		</div>
+		<!--logo end-->
+		<!--searchBox-->
+		<div class="searchBox">
+			<!--searchTheme-->
+			<div class="searchTheme">
+				<img src="images/searchTheme.jpg" alt="">
+			</div>
+			<!--searchTheme end-->
+			<!--searchList-->
+			<div class="searchList">
+				<h3>
+					<i></i>精选线路
+				</h3>
+				<ul id="routeList">
+
+				</ul>
+			</div>
+			<!--searchList end-->
+			<!--gzWrap-->
+			<div class="gzWrap">
+				<p>
+					<span>微信公众账号：</span>90度旅行
+				</p>
+				<div class="pubFocus">
+					<a class="focusBtn" title="" href="#">关注</a>
+				</div>
+				<p>
+					<span>电话：</span>010-58696609<br> <span>版权所有：</span>北京九十度旅行社有限公司
+				</p>
+			</div>
+			<!--gzWrap end-->
+		</div>
+		<!--searchBox end-->
+	</div>
+	<!--wrap end-->
+	<script type="text/javascript">
+		$(function() {
+			var winH = $(window).height(); //页面可视区域高度
+
+			//滚动条滚到页面底端    加载更多数据
+			$(window).scroll(function() {
+				var pageH = $(document).height();
+				var scrollT = $(window).scrollTop(); //滚动条top
+				var aa = (pageH - winH - scrollT) / winH;
+
+				if (aa < 0.0001) {
+					//todo 
+					more(3, 2);
+				}
+				;
+			});
+			utils.Util
+					.getJson(
+							"/route/pageList",
+							"curPage=1" + "&linePerPage=4",
+							function(data) {
+								var str = "";
+								for (i = 0; i < data.length; i++) {
+									str = str
+											+ "<li><div class='slPicture'><img src='"+data[i].img+"' alt=''></div><div class='slTitle'><a href='/h5/routeDetail.html?routeId="
+											+ data[i].route_id
+											+ "' title=''>"
+											+ data[i].name
+											+ "</a></div> <span class='slFocue slFocueSelect'>"
+											+ data[i].count + "</span></li>";
+								}
+								$("#routeList").html(str);
+							});
+
+			function more(pn, pt) {
+				if (pn <= pt) {
+					utils.Util
+							.getJson(
+									"/route/pageList",
+									"curPage=" + pn + "&linePerPage=4",
+									function(data) {
+										var str = "";
+										for (i = 0; i < data.length; i++) {
+											str = str
+													+ "<li><div class='slPicture'><img src='"+data[i].img+"' alt=''></div><div class='slTitle'><a href='/h5/routeDetail.html?routeId="
+													+ data[i].route_id
+													+ "' title=''>"
+													+ data[i].name
+													+ "</a></div> <span class='slFocue slFocueSelect'>"
+													+ data[i].count
+													+ "</span></li>";
+										}
+										$("#routeList").children().last()
+												.after(str);
+									});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

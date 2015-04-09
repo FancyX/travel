@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>线路详情页</title>
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link href="css/common.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/jquery-1.9.0.js"></script>
+<script type="text/javascript" src="js/effect.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+</head>
+
+<body>
+	<!--wrap-->
+	<div class="wrap">
+		<!--logo-->
+		<div class="logo">
+			<span class="logoIco">90logo</span>
+		</div>
+		<!--logo end-->
+		<!--detailInfor-->
+		<div class="detailInfor">
+			<!--detailPic-->
+			<div class="detailPic">
+				<div class="detailPicList">
+					<ul>
+						<li class="current"><img src="images/detailPicture01.jpg"
+							alt=""></li>
+						<li><img src="images/detailPicture01.jpg" alt=""></li>
+						<li><img src="images/detailPicture01.jpg" alt=""></li>
+					</ul>
+				</div>
+				<div class="detailPicNav">
+					<a href="#" title="" class="current"></a> <a href="#" title=""></a>
+					<a href="#" title=""></a>
+				</div>
+				<h3 id="pathName"></h3>
+			</div>
+			<!--detailPic end-->
+			<!--detailIntro-->
+			<div class="detailIntro" id="pathWord">
+				<p></p>
+			</div>
+			<!--detailIntro end-->
+			<h2 class="detailTitle">线路详情</h2>
+			<div class="detailDefine">
+				<a href="/lbs/index.html" title="" class="buyIco">立即预定</a>
+			</div>
+			<!--detailBanner-->
+			<div class="detailBanner">
+				<div class="detailPicList">
+					<ul>
+						<li class="current"><img src="css/img/detailMap.jpg" alt="">
+						</li>
+						<li><img src="images/detailMap.jpg" alt=""></li>
+					</ul>
+				</div>
+				<div class="detailPicNav">
+					<a href="#" title="" class="current"></a> <a href="#" title=""></a>
+				</div>
+			</div>
+			<!--detailBanner end-->
+			<!--detailWay-->
+			<div class="detailWay">
+				<ul id="poiList">
+
+				</ul>
+			</div>
+			<!--detailWay end-->
+			<h2 class="detailTitle">过往感言</h2>
+			<!--detailMsg-->
+			<div class="detailMsg" id="commentList"></div>
+			<!--detailMsg end-->
+			<!--gsHao-->
+			<div class="gsHao">九十度旅行公众号：jsdtravel</div>
+			<!--gsHao end-->
+		</div>
+		<!--detailInfor end-->
+	</div>
+	<!--wrap end-->
+	<script type="text/javascript">
+		$(function() {
+			var loc = window.location.search;
+			loc = "{\""
+					+ loc.substring(1).replace(/=/g, "\":\"").replace(/&/g,
+							"\",\"") + "\"}";
+			loc = JSON.parse(loc);
+			utils.Util.getJson("/route/detail",
+					"routeId=" + loc.routeId, function(data) {
+						$("#pathName").html(data.name);
+						$("#pathWord").html(data.word);
+
+					});
+			utils.Util.getJson("/pois/list", "routeId=" + loc.routeId,
+					function(data) {
+						var str = "";
+						for (i = 0; i < data.length; i++) {
+							str = str + "<li><span class='dwTitle'>"
+									+ data[i].img
+									+ "</span><div class='dwMain'>"
+									+ data[i].word + "</div></li>";
+
+						}
+						$("#poiList").html(str);
+					});
+			utils.Util
+					.getJson(
+							"/comment/pageList",
+							"routeId=" + loc.routeId + "&curPage=1"
+									+ "&linePerPage=4",
+							function(data) {
+								var str = "";
+								for (i = 0; i < data.length; i++) {
+									str = str
+											+ "<dl><dt><img src='"
+									+ data[i].photo
+									+ "' alt=''></dt><dd><strong><a href='#' title=''>"
+											+ data[i].wechat_num
+											+ "</a> </strong><p>"
+											+ data[i].content
+											+ "</p></dd></dl>";
+
+								}
+								$("#commentList").html(str);
+							});
+		});
+	</script>
+</body>
+</html>
