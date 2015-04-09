@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        html{height:100%}
+        body{height:100%;margin:0px;padding:0px}
+        #map{height:100%}
+    </style>
+</head>
+<body onload="init()">
+<div id="map"></div>
+<script>
+    //init
+    function init(){
+        map_load();
+    }
+    //map
+    function map_load(){
+        //alert("map_load");
+        //layer
+        imageLayer=new AMap.ImageLayer({
+            //url: 'http://c.hiphotos.baidu.com/image/pic/item/94cad1c8a786c91795c6a822cb3d70cf3ac757e0.jpg',
+            url: 'http://yuntu.amap.com/share/JVBBne',
+            bounds: new AMap.Bounds( //经纬度边界
+                    new AMap.LngLat(116.340408,39.890114),
+                    new AMap.LngLat(116.463146,39.937645)),
+            zooms: [13, 15] //可见zoom范围
+        });
+        //basemap
+        var position=new AMap.LngLat(116.397428,39.90923);
+        var mapObj=new AMap.Map("map",{
+            /*layers:[
+                imageLayer
+            ],*/
+            /*layers:[
+                new AMap.TileLayer(),//加载地图底图
+                new AMap.TileLayer.Traffic()//叠加实时交通图层
+            ],*/
+            view: new AMap.View2D({//创建地图二维视口
+                center:position,//创建中心点坐标
+                zoom:14, //设置地图缩放级别
+                rotation:0 //设置地图旋转角度
+            }),
+            lang:"zh_cn"//设置地图语言类型，默认：中文简体
+        });//创建地图实例
+        //加载云图数据
+        mapObj.plugin('AMap.CloudDataLayer', function () {
+            var layerOptions = {
+                query:{keywords: ''},
+                clickable:true
+            };
+            var cloudDataLayer = new AMap.CloudDataLayer('550fcec9e4b005aa55929d8a', layerOptions); //实例化云图层类
+            cloudDataLayer.setMap(mapObj); //叠加云图层到地图
+
+            AMap.event.addListener(cloudDataLayer, 'click', function (result) {
+                var clouddata = result.data;
+                var infoWindow = new AMap.InfoWindow({
+                    content:"<h3><font face=\"微软雅黑\"color=\"#3366FF\">"+ clouddata._name +"</font></h3><hr />地址："+ clouddata._address + "<br />" + "创建时间：" + clouddata._createtime+ "<br />" + "更新时间：" + clouddata._updatetime,
+                    size:new AMap.Size(300, 0),
+                    autoMove:true,
+                    offset:new AMap.Pixel(0,-25)
+                });
+
+                infoWindow.open(mapObj, clouddata._location);
+            });
+        });
+        //plugin
+        mapObj.plugin(["AMap.ToolBar","AMap.OverView","AMap.Scale"],function(){
+            //加载工具条
+            tool = new AMap.ToolBar({
+                direction:false,//隐藏方向导航
+                ruler:false,//隐藏视野级别控制尺
+                autoPosition:false//禁止自动定位
+            });
+            mapObj.addControl(tool);
+            //加载鹰眼
+            view = new AMap.OverView();
+            mapObj.addControl(view);
+            //加载比例尺
+            scale = new AMap.Scale();
+            mapObj.addControl(scale);
+        });
+        //event
+        //var listener = AMap.event.addListener(mapObj,"click",function(e){
+        var listener = AMap.event.addListenerOnce(mapObj,"click",function(e){
+            var lnglat=e.lnglat;
+            var marker = new AMap.Marker({
+                map:mapObj,
+                position:e.lnglat,
+                icon:"http://webapi.amap.com/images/0.png",
+                offset:new AMap.Pixel(-10,-34)
+            });
+            mapObj.setCenter(lnglat);
+        });
+        //marker
+        var marker = new AMap.Marker({
+            position:new AMap.LngLat(116.39792,39.900058),//基点位置
+            offset:new AMap.Pixel(-14,-34),//相对于基点的偏移位置
+            icon:new AMap.Icon({  //复杂图标
+                size:new AMap.Size(28,37),//图标大小
+                image:"http://webapi.amap.com/images/0.png",//大图地址
+                imageOffset:new AMap.Pixel(0,0)//相对于大图的取图位置
+            })
+        });
+        marker.setMap(mapObj);
+        //polyline
+        var arr = new Array();//经纬度坐标数组
+        arr.push(new AMap.LngLat(116.39792,39.900058));
+        arr.push(new AMap.LngLat(116.397985,39.898457));
+        arr.push(new AMap.LngLat(116.398103,39.896082));
+        arr.push(new AMap.LngLat(116.397732,39.896065));
+        arr.push(new AMap.LngLat(116.39777,39.894036));
+        arr.push(new AMap.LngLat(116.394637,39.893995));
+        arr.push(new AMap.LngLat(116.394707,39.895794));
+        arr.push(new AMap.LngLat(116.394466,39.897263));
+        arr.push(new AMap.LngLat(116.394557,39.897658));
+        arr.push(new AMap.LngLat(116.39394,39.897646));
+        arr.push(new AMap.LngLat(116.393908,39.897901));
+        arr.push(new AMap.LngLat(116.392642,39.897798));
+        arr.push(new AMap.LngLat(116.392658,39.898329));
+        arr.push(new AMap.LngLat(116.389085,39.89844));
+        var polyline = new AMap.Polyline({
+            map:mapObj,
+            path:arr,
+            strokeColor:"red",
+            strokeOpacity:0.4,
+            strokeWeight:3
+        });
+        //polygon
+/*        var arr_polygon = new Array();//经纬度坐标数组
+        arr_polygon.push(new AMap.LngLat(116.400114,39.900856));
+        arr_polygon.push(new AMap.LngLat(116.400114,39.893077));
+        arr_polygon.push(new AMap.LngLat(116.39225,39.893077));
+        arr_polygon.push(new AMap.LngLat(116.39225,39.896337));
+        arr_polygon.push(new AMap.LngLat(116.386896,39.896337));
+        arr_polygon.push(new AMap.LngLat(116.386896,39.900856));
+        var polygon=new AMap.Polygon({
+            map:mapObj,//要显示覆盖物的地图对象
+            path:arr_polygon,  //多边形顶点经纬度数组
+            strokeColor:"#0000ff",//线颜色
+            strokeOpacity:0.2,//线透明度
+            strokeWeight:3,   //线宽
+            fillColor: "blue", //填充色
+            fillOpacity: 0.35 //填充透明度
+        });*/
+        //infoWindow
+        var info = [];
+        info.push("<b> 前门</b>");
+        info.push("  地址 : 北京市东城区前门东大街");
+
+        var inforWindow = new AMap.InfoWindow({
+            offset:new AMap.Pixel(0,-23),
+            content:info.join("<br>")
+        });
+        AMap.event.addListener(marker,"click",function(e){
+            inforWindow.open(mapObj,marker.getPosition());
+        });
+        /*//groundImage
+        var groundimageOpts={
+            map:mapObj,     //添加到地图
+            opacity:0.8,    //设置图片的透明度
+            clickable:true  //图片相应鼠标点击事件，默认：false
+        } ;
+        var sw = new AMap.LngLat(116.384377, 39.935029);
+        var ne = new AMap.LngLat(116.388331, 39.939577);
+        var bounds=new AMap.Bounds(sw,ne);//图片叠加的地理范围
+
+        var groundImage=new AMap.GroundImage("http://developer.amap.com/wp-content/uploads/2014/06/gwf.png",bounds,groundImageOpts);//图片地址，图片叠加的地理范围，图片初始化对象
+        groundImage.setMap(mapObj);
+        //service
+        var auto;
+        //加载输入提示插件
+        AMap.service(["AMap.Autocomplete"], function() {
+            var autoOptions = {
+                city: "" //城市，默认全国
+            };
+            auto = new AMap.Autocomplete(autoOptions);
+            //查询成功时返回查询结果
+            if ( keywords.length > 0) {
+                auto.search(keywords, function(status, result){
+                    autocomplete_CallBack(result);
+                });
+            }
+            else {
+                document.getElementById("result1").style.display = "none";
+            }
+        });*/
+    }
+    function loadScript() {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "http://webapi.amap.com/maps?v=1.3&key=286134f590383d6bb38bbf5071bfcf51&callback=init";
+        document.body.appendChild(script);
+    }
+    window.onload = loadScript;
+</script>
+</body>
+</html>
