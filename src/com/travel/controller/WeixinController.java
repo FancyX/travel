@@ -23,6 +23,7 @@ public class WeixinController extends WeixinControllerSupport{
 	private static final String APPID = "wxbb5fb5be10f0b3cb";
 	private static final String SECRET = "e71019ed6dd18e8329301f71903033ad";
     private static final String TOKEN = "90travel";
+    private static long ticketTime = System.currentTimeMillis();
     private static final ApiConfig config = new ApiConfig(APPID, SECRET, true);
 	
 	@Override
@@ -58,6 +59,10 @@ public class WeixinController extends WeixinControllerSupport{
 	@RequestMapping(value = "/getSignature", produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String getSignature(HttpServletRequest request){
+		if(System.currentTimeMillis()-ticketTime>7200){
+			config.init();
+			ticketTime = System.currentTimeMillis();
+		}
 		String url = request.getParameter("url");
 	    GetSignatureResponse response = new JsAPI(config).getSignature(url);
 		return JsonUtil.getJson(response);
