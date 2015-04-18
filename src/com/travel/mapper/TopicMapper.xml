@@ -10,12 +10,15 @@
 		<result column="topic_prompt" property="prompt" />
 		<result column="topic_path_id" property="pathId" />
 		<result column="topic_type" property="type" />
+		<result column="topic_random" property="random" />
+		<result column="topic_answer" property="answer" />
 	</resultMap>
 
 	<sql id="topicColumns">topic.id AS topic_id , topic.title AS topic_title ,
 		topic.content AS topic_content , topic.score AS topic_score ,
 		topic.prompt AS topic_prompt , topic.path_id AS topic_path_id ,
-		topic.type AS topic_type</sql>
+		topic.type AS topic_type , topic.random AS topic_random , topic.answer
+		AS topic_answer</sql>
 
 	<insert id="insert" parameterType="com.travel.model.Topic"
 		useGeneratedKeys="true" keyProperty="id">
@@ -28,6 +31,8 @@
 			<if test="prompt!=null">,prompt</if>
 			<if test="pathId!=0">,path_id</if>
 			<if test="type!=0">,type</if>
+			<if test="random!=0">,random</if>
+			<if test="answer!=null">,answer</if>
 		</trim>
 		) VALUES
 		<trim prefix="(" prefixOverrides=",">
@@ -38,6 +43,8 @@
 			<if test="prompt!=null">,#{prompt}</if>
 			<if test="pathId!=0">,#{pathId}</if>
 			<if test="type!=0">,#{type}</if>
+			<if test="random!=0">,#{random}</if>
+			<if test="answer!=null">,#{answer}</if>
 		</trim>
 		)
 	</insert>
@@ -59,6 +66,8 @@
 			<if test="prompt!=null">,prompt = #{prompt}</if>
 			<if test="pathId!=0">,path_id = #{pathId}</if>
 			<if test="type!=0">,type = #{type}</if>
+			<if test="random!=0">,random = #{random}</if>
+			<if test="answer!=null">,answer = #{answer}</if>
 		</trim>
 		<trim prefix="WHERE" prefixOverrides="AND">AND id = #{id}</trim>
 	</update>
@@ -68,14 +77,11 @@
 		<trim prefix="WHERE" prefixOverrides="AND">AND id = #{id}</trim>
 	</delete>
 
-	<select id="getList" resultMap="topicResultMap">
-		SELECT * FROM topic
-	</select>
+	<select id="getList" resultMap="topicResultMap">SELECT * FROM topic</select>
 
 	<select id="getListByPathId" resultMap="topicResultMap">
 		SELECT * FROM topic
 		where
 		path_id = #{pathId}
 	</select>
-
 </mapper>

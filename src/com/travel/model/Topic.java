@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Topic implements Serializable {
 
-    private static final long serialVersionUID = -7326008615221148856L;
+    private static final long serialVersionUID = -6376990267287878590L;
     private int id;
     private String title;
     private String content;
@@ -12,6 +12,8 @@ public class Topic implements Serializable {
     private String prompt;
     private int pathId;
     private int type;
+    private int random;
+    private String answer;
         
     public int getId() {
         return this.id;
@@ -73,6 +75,24 @@ public class Topic implements Serializable {
 
     public Topic setType(int type) {
         this.type = type;
+        return this;
+    }
+        
+    public int getRandom() {
+        return this.random;
+    }
+
+    public Topic setRandom(int random) {
+        this.random = random;
+        return this;
+    }
+        
+    public String getAnswer() {
+        return this.answer;
+    }
+
+    public Topic setAnswer(String answer) {
+        this.answer = answer;
         return this;
     }
 

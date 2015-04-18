@@ -1,6 +1,8 @@
 package com.travel.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +36,30 @@ public class TopicController {
 		int pathId = ServletRequestUtils.getIntParameter(request, "pathId", 0);
 		List<Topic> list = topicService.getListByPathId(pathId);
 		return JsonUtil.getJson(list);
+	}
+
+	/*
+	 * 验证答案
+	 * 
+	 * @param int topicId ，String answer
+	 */
+	@RequestMapping(value = "/validate ", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String validate(HttpServletRequest request, Model model) {
+		int topicId = ServletRequestUtils
+				.getIntParameter(request, "topicId", 0);
+		String answer = ServletRequestUtils.getStringParameter(request,
+				"answer", null);
+		Topic topic = topicService.findById(topicId);
+		Map<String, Object> args = new HashMap<String, Object>();
+		if (answer.contains(topic.getAnswer())) {
+			args.put("status", 1);
+		} else {
+			args.put("status", 0);
+		}
+		args.put("score", topic.getScore());
+		
+		return JsonUtil.getJson(args);
 	}
 
 }
