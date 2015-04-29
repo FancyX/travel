@@ -53,7 +53,7 @@ public class ActivityPhotoController {
 	}
 
 	/*
-	 * 上传活动图片 TODO
+	 * 上传活动图片 
 	 * 
 	 * @param int routeId
 	 * 
@@ -84,7 +84,7 @@ public class ActivityPhotoController {
 			ActivityPhoto activityPhoto = new ActivityPhoto();
 			activityPhoto.setUrl(url).setUserId(userId).setRouteId(routeId)
 					.setTime(new Timestamp(System.currentTimeMillis()));
-
+			model.addAttribute("url", url);
 			activityPhotoService.insert(activityPhoto);
 		}
 

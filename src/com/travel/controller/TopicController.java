@@ -49,16 +49,17 @@ public class TopicController {
 		int topicId = ServletRequestUtils
 				.getIntParameter(request, "topicId", 0);
 		String answer = ServletRequestUtils.getStringParameter(request,
-				"answer", null);
+				"answer", "");
+		int status = 0;
 		Topic topic = topicService.findById(topicId);
 		Map<String, Object> args = new HashMap<String, Object>();
-		if (answer.contains(topic.getAnswer())) {
-			args.put("status", 1);
-		} else {
-			args.put("status", 0);
+		for(String correct : topic.getAnswer().split("&")){
+			if (answer.contains(correct))
+				status = 1;
 		}
+		args.put("status", status);
 		args.put("score", topic.getScore());
-		
+		args.put("answer", topic.getAnswer());
 		return JsonUtil.getJson(args);
 	}
 
